@@ -182,9 +182,9 @@ function LoginModal() {
             </Button>
 
             <div className="flex w-full items-center my-4 gap-4 max-w-[280px]">
-              <div className="flex-1 bg-gray-200 h-[1px]"></div>
+              <div className="flex-1 bg-gray-200 h-px"></div>
               <p className="text-gray-500 text-sm">Or</p>
-              <div className="flex-1 bg-gray-200 h-[1px]"></div>
+              <div className="flex-1 bg-gray-200 h-px"></div>
             </div>
 
             <Button
