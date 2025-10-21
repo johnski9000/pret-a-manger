@@ -1,5 +1,4 @@
 "use client";
-import { useDisclosure } from "@mantine/hooks";
 import {
   Modal,
   Button,
@@ -400,6 +399,7 @@ function LoginModal() {
       >
         <div className="p-4 relative">
           <ActionIcon
+            data-testid="back-button"
             variant="transparent"
             onClick={handleBack}
             className="absolute top-2 left-2 hover:bg-gray-100 rounded-full transition-colors"
@@ -429,10 +429,6 @@ function LoginModal() {
           <EmailRegisterFlow />
         </div>
       </Modal>
-
-      {/* <Button variant="default" onClick={open}>
-        Open centered Modal
-      </Button> */}
     </>
   );
 }
