@@ -204,7 +204,7 @@ function LoginModal() {
             </Button>
 
             <p className="text-sm text-gray-600 mt-6">
-              Don't have an account?{" "}
+              Don&apos;t have an account?
               <button
                 onClick={() => navigateToFlow("email-register")}
                 className="text-blue-600 hover:underline font-medium"
@@ -272,7 +272,7 @@ function LoginModal() {
               </Button>
 
               <p className="text-sm text-gray-600 mt-6 text-center">
-                Don't have an account?{" "}
+                Don&apos;t have an account?{" "}
                 <button
                   type="button"
                   onClick={() => {
