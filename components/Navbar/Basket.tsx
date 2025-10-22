@@ -56,7 +56,7 @@ function Basket() {
             <div className="flex-1 overflow-y-auto">
               {items.map((item) => (
                 <div
-                  key={item.id}
+                  key={item.menuItemId}
                   className="border-b border-gray-200 py-4 px-2"
                 >
                   <div className="flex justify-between items-start mb-2">
@@ -71,7 +71,7 @@ function Basket() {
                     <ActionIcon
                       variant="subtle"
                       color="red"
-                      onClick={() => removeItem(item.id)}
+                      onClick={() => removeItem(item.menuItemId)}
                     >
                       <X size={18} />
                     </ActionIcon>
@@ -83,7 +83,7 @@ function Basket() {
                         variant="outline"
                         color="#8c042d"
                         onClick={() =>
-                          updateQuantity(item.id, item.quantity - 1)
+                          updateQuantity(item.menuItemId, item.quantity - 1)
                         }
                       >
                         <Minus size={16} />
@@ -95,7 +95,7 @@ function Basket() {
                         variant="outline"
                         color="#8c042d"
                         onClick={() =>
-                          updateQuantity(item.id, item.quantity + 1)
+                          updateQuantity(item.menuItemId, item.quantity + 1)
                         }
                       >
                         <Plus size={16} />
@@ -121,6 +121,8 @@ function Basket() {
                 fullWidth
                 size="lg"
                 color="#8c042d"
+                component="a"
+                href="/checkout"
                 rightSection={<ArrowRight size={20} />}
                 className="mb-2"
               >

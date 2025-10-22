@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Logo from "./Logo";
 import User from "./User";
 import Basket from "./Basket";
@@ -18,11 +18,26 @@ import { Drawer, Divider } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useAuth } from "@/context/AuthContext";
 import { createClient } from "@/utils/supabase/client";
+import { motion } from "framer-motion";
 
 function Navbar() {
   const [opened, { open, close }] = useDisclosure(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const { user, openLoginModal } = useAuth();
   const supabase = createClient();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 100) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const Menu_Items = [
     { name: "Home", link: "/", icon: Home },
@@ -41,38 +56,84 @@ function Navbar() {
 
   return (
     <>
-      <nav className="w-full h-16 bg-white flex items-center justify-between px-4 py-2 shadow-md">
-        <div className="flex items-center gap-6">
-          <Logo />
+      {/* Static Navbar */}
+      <nav className="w-full h-16 bg-white flex items-center justify-between px-4 py-2 shadow-md relative">
+        <div className="w-full flex items-center justify-between max-w-7xl mx-auto">
+          <div className="flex items-center gap-6">
+            <Logo />
 
-          <ul className="hidden md:flex gap-6">
-            {Menu_Items.map((item) => (
-              <li key={item.name}>
-                <a
-                  href={item.link}
-                  className="text-gray-700 hover:text-[#8c042d] font-medium transition-colors"
-                >
-                  {item.name}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="flex justify-center items-center gap-3">
-          <button
-            onClick={open}
-            className="md:hidden flex justify-center items-center cursor-pointer bg-white border border-gray-300 rounded-md w-10 h-10 hover:scale-110 transition-transform hover:shadow-sm"
-          >
-            <MenuIcon size={25} color="#8c042d" />
-          </button>
-
-          <div className="hidden md:block">
-            <User />
+            <ul className="hidden md:flex gap-6">
+              {Menu_Items.map((item) => (
+                <li key={item.name}>
+                  <a
+                    href={item.link}
+                    className="text-gray-700 hover:text-[#8c042d] font-medium transition-colors"
+                  >
+                    {item.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
-          <Basket />
+
+          <div className="flex justify-center items-center gap-3">
+            <button
+              onClick={open}
+              className="md:hidden flex justify-center items-center cursor-pointer bg-white border border-gray-300 rounded-md w-10 h-10 hover:scale-110 transition-transform hover:shadow-sm"
+            >
+              <MenuIcon size={25} color="#8c042d" />
+            </button>
+
+            <div className="hidden md:block">
+              <User />
+            </div>
+            <Basket />
+          </div>
         </div>
       </nav>
+
+      {/* Sticky Navbar */}
+      {isScrolled && (
+        <motion.nav
+          initial={{ y: -100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.3, ease: "easeInOut" }}
+          className="fixed top-0 left-0 right-0 w-full h-16 bg-white flex items-center justify-between px-4 py-2 shadow-lg z-50"
+        >
+          <div className="w-full flex items-center justify-between max-w-7xl mx-auto">
+            <div className="flex items-center gap-6">
+              <Logo />
+
+              <ul className="hidden md:flex gap-6">
+                {Menu_Items.map((item) => (
+                  <li key={item.name}>
+                    <a
+                      href={item.link}
+                      className="text-gray-700 hover:text-[#8c042d] font-medium transition-colors"
+                    >
+                      {item.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="flex justify-center items-center gap-3">
+              <button
+                onClick={open}
+                className="md:hidden flex justify-center items-center cursor-pointer bg-white border border-gray-300 rounded-md w-10 h-10 hover:scale-110 transition-transform hover:shadow-sm"
+              >
+                <MenuIcon size={25} color="#8c042d" />
+              </button>
+
+              <div className="hidden md:block">
+                <User />
+              </div>
+              <Basket />
+            </div>
+          </div>
+        </motion.nav>
+      )}
 
       <Drawer
         opened={opened}
