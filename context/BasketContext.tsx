@@ -1,21 +1,21 @@
-// context/BasketContext.tsx
 "use client";
 
 import { createContext, useContext, useState, useEffect } from "react";
+import { MenuItem } from "@/data/menu";
 
-type BasketItem = {
-  id: string;
+export type BasketItem = {
+  menuItemId: number;
   name: string;
   price: number;
   quantity: number;
-  // add other properties as needed
+  image?: string;
 };
 
 type BasketContextType = {
   items: BasketItem[];
   addItem: (item: BasketItem) => void;
-  removeItem: (id: string) => void;
-  updateQuantity: (id: string, quantity: number) => void;
+  removeItem: (menuItemId: number) => void;
+  updateQuantity: (menuItemId: number, quantity: number) => void;
   clearBasket: () => void;
   total: number;
 };
@@ -31,12 +31,10 @@ export function BasketProvider({ children }: { children: React.ReactNode }) {
     0
   );
 
-  // Optional: Persist basket to localStorage
+  // Persist basket in localStorage
   useEffect(() => {
     const savedBasket = localStorage.getItem("basket");
-    if (savedBasket) {
-      setItems(JSON.parse(savedBasket));
-    }
+    if (savedBasket) setItems(JSON.parse(savedBasket));
   }, []);
 
   useEffect(() => {
@@ -45,44 +43,39 @@ export function BasketProvider({ children }: { children: React.ReactNode }) {
 
   const addItem = (item: BasketItem) => {
     setItems((prev) => {
-      const existing = prev.find((i) => i.id === item.id);
+      const existing = prev.find((i) => i.menuItemId === item.menuItemId);
       if (existing) {
         return prev.map((i) =>
-          i.id === item.id ? { ...i, quantity: i.quantity + item.quantity } : i
+          i.menuItemId === item.menuItemId
+            ? { ...i, quantity: i.quantity + item.quantity }
+            : i
         );
       }
       return [...prev, item];
     });
   };
 
-  const removeItem = (id: string) => {
-    setItems((prev) => prev.filter((item) => item.id !== id));
+  const removeItem = (menuItemId: number) => {
+    setItems((prev) => prev.filter((item) => item.menuItemId !== menuItemId));
   };
 
-  const updateQuantity = (id: string, quantity: number) => {
+  const updateQuantity = (menuItemId: number, quantity: number) => {
     if (quantity <= 0) {
-      removeItem(id);
+      removeItem(menuItemId);
       return;
     }
     setItems((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, quantity } : item))
+      prev.map((item) =>
+        item.menuItemId === menuItemId ? { ...item, quantity } : item
+      )
     );
   };
 
-  const clearBasket = () => {
-    setItems([]);
-  };
+  const clearBasket = () => setItems([]);
 
   return (
     <BasketContext.Provider
-      value={{
-        items,
-        addItem,
-        removeItem,
-        updateQuantity,
-        clearBasket,
-        total,
-      }}
+      value={{ items, addItem, removeItem, updateQuantity, clearBasket, total }}
     >
       {children}
     </BasketContext.Provider>
@@ -91,8 +84,7 @@ export function BasketProvider({ children }: { children: React.ReactNode }) {
 
 export const useBasket = () => {
   const context = useContext(BasketContext);
-  if (context === undefined) {
+  if (!context)
     throw new Error("useBasket must be used within a BasketProvider");
-  }
   return context;
 };
